@@ -5,18 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Red/Blue Style Game</title>
     <style>
-        body {
+        /* Basic reset for the body and html */
+        body, html {
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e0f7fa; /* Light cyan background */
+            font-family: 'Arial', sans-serif;
+            color: #333;
         }
+
         canvas {
-            display: block;
-            background-color: #87cefa; /* Sky blue background */
+            border: 3px solid #004d40; /* Dark teal border */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Add a soft shadow */
+        }
+
+        /* Style for the body to center the canvas */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #87cefa;
+        }
+
+        /* Simple game instruction text */
+        #gameInfo {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
         }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
+    <div id="gameInfo">Use WASD or Arrow Keys to move, Space to interact.</div>
     <script src="game.js"></script>
 </body>
 </html>
