@@ -1,68 +1,56 @@
-/* Basic Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Red/Blue Style Game</title>
+    <style>
+        /* Basic reset for the body and html */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e0f7fa; /* Light cyan background */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #e3f2fd;
-    color: #333;
-    text-align: center;
-    padding: 20px;
-}
+        canvas {
+            border: 3px solid #004d40; /* Dark teal border */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Add a soft shadow */
+        }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-}
+        /* Style for the body to center the canvas */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #87cefa;
+        }
 
-header h1 {
-    font-size: 2.5em;
-    color: #ffcb05;
-}
-
-#map {
-    display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-    gap: 5px;
-    margin: 20px auto;
-    position: relative;
-}
-
-.tile {
-    width: 40px;
-    height: 40px;
-    background-color: #4caf50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #333;
-}
-
-.player {
-    background-color: #ff9800;
-    border-radius: 50%;
-}
-
-#controls button {
-    padding: 10px 20px;
-    background-color: #ffcb05;
-    color: #fff;
-    border: none;
-    font-size: 1em;
-    margin: 5px;
-    cursor: pointer;
-}
-
-#controls button:hover {
-    background-color: #ff9800;
-}
-
-#encounter {
-    margin-top: 20px;
-    font-size: 1.2em;
-    color: #ff5733;
-}
+        /* Simple game instruction text */
+        #gameInfo {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="gameInfo">Use WASD or Arrow Keys to move, Space to interact.</div>
+    <script src="game.js"></script>
+</body>
+</html>
