@@ -3,32 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokémon World</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Pokémon Red/Blue Style Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            background-color: #87cefa; /* Sky blue background */
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Pokémon World</h1>
-            <p>Move around the map and encounter Pokémon!</p>
-        </header>
-
-        <div id="map">
-            <!-- Grid for the game map -->
-        </div>
-
-        <div id="controls">
-            <button onclick="movePlayer('up')">Move Up</button>
-            <button onclick="movePlayer('left')">Move Left</button>
-            <button onclick="movePlayer('down')">Move Down</button>
-            <button onclick="movePlayer('right')">Move Right</button>
-        </div>
-
-        <div id="encounter">
-            <p id="encounter-text"></p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <canvas id="gameCanvas"></canvas>
+    <script src="game.js"></script>
 </body>
 </html>
