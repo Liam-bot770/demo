@@ -13,36 +13,51 @@ const player = {
     y: canvas.height / 2,
     width: TILE_SIZE,
     height: TILE_SIZE,
-    speed: 4
+    speed: 4,
+    health: 100,
+    attack: 20,
+    defense: 10
 };
 
-// Map setup (simple grid)
+// Map setup (grid-based: 1 = grass, 2 = water, 0 = road)
 const mapWidth = Math.floor(canvas.width / TILE_SIZE);
 const mapHeight = Math.floor(canvas.height / TILE_SIZE);
-const gameMap = Array(mapHeight).fill().map(() => Array(mapWidth).fill(0));
+const gameMap = Array.from({ length: mapHeight }, () =>
+    Array.from({ length: mapWidth }, () => Math.floor(Math.random() * 3)) // Random map tiles
+);
 
-// Player movement
-let keys = {};
+// Button UI handling
+const btnBattle = document.getElementById('btnBattle');
+const btnStats = document.getElementById('btnStats');
+const infoBox = document.getElementById('infoBox');
 
-window.addEventListener('keydown', (e) => {
-    keys[e.key] = true;
-});
+// Button actions
+btnBattle.addEventListener('click', () => startBattle());
+btnStats.addEventListener('click', () => showStats());
 
-window.addEventListener('keyup', (e) => {
-    keys[e.key] = false;
-});
+// Show player stats
+function showStats() {
+    infoBox.style.display = 'block';
+    infoBox.innerHTML = `
+        <h2>Player Stats</h2>
+        <p>Health: ${player.health}</p>
+        <p>Attack: ${player.attack}</p>
+        <p>Defense: ${player.defense}</p>
+        <button class="uiButton" onclick="infoBox.style.display = 'none'">Close</button>
+    `;
+}
 
 // Simple battle system
 function startBattle() {
     alert("A wild Pokémon appeared!");
-    let playerHealth = 100;
     let enemyHealth = 50;
+    let enemyAttack = 15;
 
-    // Simple battle loop
-    while (playerHealth > 0 && enemyHealth > 0) {
+    // Battle loop
+    while (player.health > 0 && enemyHealth > 0) {
         const action = prompt("Choose an action: [1] Attack [2] Run");
         if (action === '1') {
-            let damage = Math.floor(Math.random() * 20) + 10;
+            let damage = Math.max(player.attack - enemyAttack, 0);
             enemyHealth -= damage;
             alert(`You attacked the wild Pokémon for ${damage} damage!`);
         } else if (action === '2') {
@@ -55,34 +70,34 @@ function startBattle() {
             break;
         }
 
-        // Enemy attack
-        let enemyDamage = Math.floor(Math.random() * 15) + 5;
-        playerHealth -= enemyDamage;
+        // Enemy attacks
+        let enemyDamage = Math.max(enemyAttack - player.defense, 0);
+        player.health -= enemyDamage;
         alert(`The wild Pokémon attacks you for ${enemyDamage} damage!`);
         
-        if (playerHealth <= 0) {
+        if (player.health <= 0) {
             alert("You were defeated!");
             break;
         }
     }
 }
 
-// Check for battle encounters
-function checkForBattle() {
-    // Random encounter chance (10% chance to trigger battle)
-    if (Math.random() < 0.1) {
-        startBattle();
-    }
-}
-
-// Draw map (just simple squares)
+// Draw grid-based map (each tile has a color)
 function drawMap() {
     for (let y = 0; y < mapHeight; y++) {
         for (let x = 0; x < mapWidth; x++) {
-            if (gameMap[y][x] === 0) {
-                ctx.fillStyle = 'green';
-                ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            switch (gameMap[y][x]) {
+                case 0:
+                    ctx.fillStyle = 'lightgray'; // road
+                    break;
+                case 1:
+                    ctx.fillStyle = 'green'; // grass
+                    break;
+                case 2:
+                    ctx.fillStyle = 'blue'; // water
+                    break;
             }
+            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
 }
@@ -95,19 +110,32 @@ function drawPlayer() {
 
 // Update game state
 function update() {
-    // Player movement
-    if (keys['ArrowLeft'] || keys['a']) player.x -= player.speed;
-    if (keys['ArrowRight'] || keys['d']) player.x += player.speed;
-    if (keys['ArrowUp'] || keys['w']) player.y -= player.speed;
-    if (keys['ArrowDown'] || keys['s']) player.y += player.speed;
+    // Player movement (arrow keys or WASD)
+    let moved = false;
+    if (keys['ArrowLeft'] || keys['a']) {
+        player.x -= player.speed;
+        moved = true;
+    }
+    if (keys['ArrowRight'] || keys['d']) {
+        player.x += player.speed;
+        moved = true;
+    }
+    if (keys['ArrowUp'] || keys['w']) {
+        player.y -= player.speed;
+        moved = true;
+    }
+    if (keys['ArrowDown'] || keys['s']) {
+        player.y += player.speed;
+        moved = true;
+    }
 
     // Boundaries check
     player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
     player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
 
-    // Check for battle every 30 frames (to reduce frequency)
-    if (Math.random() < 0.03) {
-        checkForBattle();
+    // Trigger random battle (10% chance)
+    if (Math.random() < 0.03 && moved) {
+        startBattle();
     }
 
     // Draw everything
@@ -116,6 +144,15 @@ function update() {
 
     requestAnimationFrame(update);
 }
+
+// Handle key events for movement
+let keys = {};
+window.addEventListener('keydown', (e) => {
+    keys[e.key] = true;
+});
+window.addEventListener('keyup', (e) => {
+    keys[e.key] = false;
+});
 
 // Start the game loop
 update();
