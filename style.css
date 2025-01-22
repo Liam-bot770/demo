@@ -1,4 +1,4 @@
-/* Basic reset */
+/* Basic Reset */
 * {
     margin: 0;
     padding: 0;
@@ -7,80 +7,62 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+    background-color: #e3f2fd;
     color: #333;
+    text-align: center;
+    padding: 20px;
 }
 
 .container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
-    text-align: center;
 }
 
-header {
-    margin-bottom: 40px;
-}
-
-h1 {
-    color: #ffcb05;
+header h1 {
     font-size: 2.5em;
-}
-
-h2 {
-    margin-top: 20px;
-    font-size: 2em;
     color: #ffcb05;
 }
 
-button {
+#map {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 5px;
+    margin: 20px auto;
+    position: relative;
+}
+
+.tile {
+    width: 40px;
+    height: 40px;
+    background-color: #4caf50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+}
+
+.player {
+    background-color: #ff9800;
+    border-radius: 50%;
+}
+
+#controls button {
     padding: 10px 20px;
     background-color: #ffcb05;
     color: #fff;
-    font-size: 1.2em;
     border: none;
-    border-radius: 5px;
+    font-size: 1em;
+    margin: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #ff9900;
+#controls button:hover {
+    background-color: #ff9800;
 }
 
-#pokemon-cards {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.pokemon-card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 120px;
-    text-align: center;
-}
-
-.pokemon-card img {
-    width: 100px;
-    height: 100px;
-}
-
-.pokemon-card h3 {
+#encounter {
+    margin-top: 20px;
     font-size: 1.2em;
-    margin-top: 10px;
-}
-
-#collection-list {
-    list-style: none;
-    padding: 0;
-}
-
-#collection-list li {
-    font-size: 1.5em;
-    color: #ffcb05;
-    margin: 10px 0;
+    color: #ff5733;
 }
