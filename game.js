@@ -1,82 +1,121 @@
-// Initialize the map grid and player position
-const mapSize = 10;
-const map = document.getElementById('map');
-let playerPosition = { x: 0, y: 0 };
+// Setup canvas and game variables
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-// List of possible Pokémon encounters
-const pokemons = [
-    { name: 'Pikachu', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png' },
-    { name: 'Bulbasaur', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png' },
-    { name: 'Charmander', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png' },
-    { name: 'Squirtle', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png' },
-    { name: 'Eevee', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png' },
-    { name: 'Jigglypuff', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png' }
-];
+// Set the canvas size
+canvas.width = 800;
+canvas.height = 600;
 
-// Function to create the map grid
-function createMap() {
-    for (let y = 0; y < mapSize; y++) {
-        for (let x = 0; x < mapSize; x++) {
-            const tile = document.createElement('div');
-            tile.classList.add('tile');
-            tile.dataset.x = x;
-            tile.dataset.y = y;
-            map.appendChild(tile);
+// Tile and player setup
+const TILE_SIZE = 32;
+const player = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    width: TILE_SIZE,
+    height: TILE_SIZE,
+    speed: 4
+};
+
+// Map setup (simple grid)
+const mapWidth = Math.floor(canvas.width / TILE_SIZE);
+const mapHeight = Math.floor(canvas.height / TILE_SIZE);
+const gameMap = Array(mapHeight).fill().map(() => Array(mapWidth).fill(0));
+
+// Player movement
+let keys = {};
+
+window.addEventListener('keydown', (e) => {
+    keys[e.key] = true;
+});
+
+window.addEventListener('keyup', (e) => {
+    keys[e.key] = false;
+});
+
+// Simple battle system
+function startBattle() {
+    alert("A wild Pokémon appeared!");
+    let playerHealth = 100;
+    let enemyHealth = 50;
+
+    // Simple battle loop
+    while (playerHealth > 0 && enemyHealth > 0) {
+        const action = prompt("Choose an action: [1] Attack [2] Run");
+        if (action === '1') {
+            let damage = Math.floor(Math.random() * 20) + 10;
+            enemyHealth -= damage;
+            alert(`You attacked the wild Pokémon for ${damage} damage!`);
+        } else if (action === '2') {
+            alert("You ran away!");
+            return;
+        }
+
+        if (enemyHealth <= 0) {
+            alert("You defeated the wild Pokémon!");
+            break;
+        }
+
+        // Enemy attack
+        let enemyDamage = Math.floor(Math.random() * 15) + 5;
+        playerHealth -= enemyDamage;
+        alert(`The wild Pokémon attacks you for ${enemyDamage} damage!`);
+        
+        if (playerHealth <= 0) {
+            alert("You were defeated!");
+            break;
         }
     }
 }
 
-// Function to update the player position
-function updatePlayerPosition() {
-    // Clear previous player position
-    const previousTile = document.querySelector('.tile.player');
-    if (previousTile) {
-        previousTile.classList.remove('player');
-    }
-
-    // Get the new tile for the player
-    const newTile = document.querySelector(`[data-x="${playerPosition.x}"][data-y="${playerPosition.y}"]`);
-    if (newTile) {
-        newTile.classList.add('player');
-    }
-
-    // Trigger a random encounter
-    triggerEncounter();
-}
-
-// Function to trigger an encounter with a Pokémon
-function triggerEncounter() {
-    const encounterChance = Math.random();
-    if (encounterChance < 0.2) { // 20% chance of encountering a Pokémon
-        const randomPokemon = pokemons[Math.floor(Math.random() * pokemons.length)];
-        document.getElementById('encounter-text').textContent = `A wild ${randomPokemon.name} appears!`;
-    } else {
-        document.getElementById('encounter-text').textContent = '';
+// Check for battle encounters
+function checkForBattle() {
+    // Random encounter chance (10% chance to trigger battle)
+    if (Math.random() < 0.1) {
+        startBattle();
     }
 }
 
-// Movement functions
-function movePlayer(direction) {
-    switch (direction) {
-        case 'up':
-            if (playerPosition.y > 0) playerPosition.y--;
-            break;
-        case 'down':
-            if (playerPosition.y < mapSize - 1) playerPosition.y++;
-            break;
-        case 'left':
-            if (playerPosition.x > 0) playerPosition.x--;
-            break;
-        case 'right':
-            if (playerPosition.x < mapSize - 1) playerPosition.x++;
-            break;
-        default:
-            break;
+// Draw map (just simple squares)
+function drawMap() {
+    for (let y = 0; y < mapHeight; y++) {
+        for (let x = 0; x < mapWidth; x++) {
+            if (gameMap[y][x] === 0) {
+                ctx.fillStyle = 'green';
+                ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }
+        }
     }
-
-    updatePlayerPosition();
 }
 
-// Initialize the map and player position
-createMap();
-updatePlayerPosition();
+// Draw player
+function drawPlayer() {
+    ctx.fillStyle = 'red';
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+}
+
+// Update game state
+function update() {
+    // Player movement
+    if (keys['ArrowLeft'] || keys['a']) player.x -= player.speed;
+    if (keys['ArrowRight'] || keys['d']) player.x += player.speed;
+    if (keys['ArrowUp'] || keys['w']) player.y -= player.speed;
+    if (keys['ArrowDown'] || keys['s']) player.y += player.speed;
+
+    // Boundaries check
+    player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+    player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+
+    // Check for battle every 30 frames (to reduce frequency)
+    if (Math.random() < 0.03) {
+        checkForBattle();
+    }
+
+    // Draw everything
+    drawMap();
+    drawPlayer();
+
+    requestAnimationFrame(update);
+}
+
+// Start the game loop
+update();
